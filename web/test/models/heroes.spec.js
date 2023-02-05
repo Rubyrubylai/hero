@@ -45,15 +45,15 @@ const MOCK_HEROES_WITH_PROFILE_DATA = {
 describe('Heroes model', () => {
 
 	describe('getHeroes', () => {
-		let apiHeroesStub
+		let heroesApiStub
 
 		beforeEach(() => {
-			apiHeroesStub = sinon.stub(externalApi, 'apiHeroes')
-			apiHeroesStub.returns(Promise.resolve(MOCK_HEROES_DATA))
+			heroesApiStub = sinon.stub(externalApi, 'heroesApi')
+			heroesApiStub.returns(Promise.resolve(MOCK_HEROES_DATA))
 		})
 
 		afterEach(() => {
-			apiHeroesStub.restore()
+			heroesApiStub.restore()
 		})
 
 		describe('without name and password', () => {
@@ -66,26 +66,26 @@ describe('Heroes model', () => {
 		})
 
 		describe('with name and password', () => {
-			let apiHeroProfileStub
+			let heroProfileApiStub
 
 			beforeEach(() => {
-				apiHeroProfileStub = sinon.stub(externalApi, 'apiHeroProfile')
-				apiHeroProfileStub.returns(Promise.resolve(MOCK_PROFILE_DATA))
+				heroProfileApiStub = sinon.stub(externalApi, 'heroProfileApi')
+				heroProfileApiStub.returns(Promise.resolve(MOCK_PROFILE_DATA))
 			})
 
 			afterEach(() => {
-				apiHeroProfileStub.restore()
+				heroProfileApiStub.restore()
 			})
 
 			describe('get heroes', () => {
-				let apiAuthStub
+				let authApiStub
 
 				before(() => {
-					apiAuthStub = sinon.stub(externalApi, 'apiAuth')
+					authApiStub = sinon.stub(externalApi, 'authApi')
 				})
 
 				after(() => {
-					apiAuthStub.restore()
+					authApiStub.restore()
 				})
 
 				it('respond heroes including profile', async () => {
@@ -97,7 +97,7 @@ describe('Heroes model', () => {
 			})
 
 			describe('get heroes with wrong name', () => {
-				let apiAuthStub
+				let authApiStub
 
 				before(() => {
 					const error = {
@@ -106,11 +106,11 @@ describe('Heroes model', () => {
 							data: 'Unauthorized',
 						}
 					}
-					apiAuthStub = sinon.stub(externalApi, 'apiAuth').throws(error)
+					authApiStub = sinon.stub(externalApi, 'authApi').throws(error)
 				})
 
 				after(() => {
-					apiAuthStub.restore()
+					authApiStub.restore()
 				})
 
 				it('respond unauthorized', async () => {
@@ -139,15 +139,15 @@ describe('Heroes model', () => {
 	})
 
 	describe('getHero', () => {
-		let apiHeroStub
+		let heroApiStub
 
 		beforeEach(() => {
-			apiHeroStub = sinon.stub(externalApi, 'apiHero')
-			apiHeroStub.returns(Promise.resolve(MOCK_HERO_DATA))
+			heroApiStub = sinon.stub(externalApi, 'heroApi')
+			heroApiStub.returns(Promise.resolve(MOCK_HERO_DATA))
 		})
 
 		afterEach(() => {
-			apiHeroStub.restore()
+			heroApiStub.restore()
 		})
 
 		describe('without name and password', () => {
@@ -160,38 +160,38 @@ describe('Heroes model', () => {
 		})
 
 		describe('with name and password', () => {
-			let apiHeroProfileStub
+			let heroProfileApiStub
 
 			beforeEach(() => {
-				apiHeroProfileStub = sinon.stub(externalApi, 'apiHeroProfile')
-				apiHeroProfileStub.returns(Promise.resolve(MOCK_PROFILE_DATA))
+				heroProfileApiStub = sinon.stub(externalApi, 'heroProfileApi')
+				heroProfileApiStub.returns(Promise.resolve(MOCK_PROFILE_DATA))
 			})
 
 			afterEach(() => {
-				apiHeroProfileStub.restore()
+				heroProfileApiStub.restore()
 			})
 
 			describe('get matching hero', () => {
-				let apiAuthStub
+				let authApiStub
 
 				before(() => {
-					apiAuthStub = sinon.stub(externalApi, 'apiAuth')
+					authApiStub = sinon.stub(externalApi, 'authApi')
 				})
 
 				after(() => {
-					apiAuthStub.restore()
+					authApiStub.restore()
 				})
 
 				it('respond hero including profile', async () => {
 					heroService = new HeroService(NAME, PASSWORD)
-					const hero = await heroService.getHero()
+					const hero = await heroService.getHero(1)
 
 					expect(hero).to.deep.equal(MOCK_HERO_WITH_PROFILE_DATA.data)
 				})
 			})
 
 			describe('get hero with wrong name', () => {
-				let apiAuthStub
+				let authApiStub
 
 				before(() => {
 					const error = {
@@ -200,17 +200,17 @@ describe('Heroes model', () => {
 							data: 'Unauthorized',
 						}
 					}
-					apiAuthStub = sinon.stub(externalApi, 'apiAuth').throws(error)
+					authApiStub = sinon.stub(externalApi, 'authApi').throws(error)
 				})
 
 				after(() => {
-					apiAuthStub.restore()
+					authApiStub.restore()
 				})
 
 				it('respond unauthorized', async () => {
 					heroService = new HeroService('wrongName', PASSWORD)
 					try {
-						await heroService.getHero()
+						await heroService.getHero(1)
 					}
 					catch (err) {
 						expect(err).to.deep.equal(new PermissionDenied('your name or password is wrong'))
@@ -222,7 +222,7 @@ describe('Heroes model', () => {
 				it('respond value error', async () => {
 					heroService = new HeroService(null, PASSWORD)
 					try {
-						await heroService.getHero()
+						await heroService.getHero(1)
 					}
 					catch (err) {
 						expect(err).to.deep.equal(new ValueError('name or password is missing'))
@@ -233,9 +233,10 @@ describe('Heroes model', () => {
 	})
 
 	describe('getHero with incorrect heroId', () => {
-		let apiHeroStub
+		let heroApiStub
 		const id = 1
 		const notFoundMessage = 'Not Found'
+		const errorMessage = `id ${id}: ${notFoundMessage}`
 
 		describe('without name and password', () => {
 			beforeEach(() => {
@@ -245,11 +246,11 @@ describe('Heroes model', () => {
 						data: notFoundMessage
 					}
 				}
-				apiHeroStub = sinon.stub(externalApi, 'apiHero').throws(error)
+				heroApiStub = sinon.stub(externalApi, 'heroApi').throws(error)
 			})
 
 			afterEach(() => {
-				apiHeroStub.restore()
+				heroApiStub.restore()
 			})
 
 			it('respond not found', async () => {
@@ -258,25 +259,24 @@ describe('Heroes model', () => {
 					await heroService.getHero(id)
 				}
 				catch (err) {
-					expect(err).to.deep.equal(new NotFound(`id ${id}: ${notFoundMessage}`))
+					expect(err).to.deep.equal(new NotFound(errorMessage))
 				}
 			})
 		})
 
 		describe('with name and password', () => {
-			let apiAuthStub
-			let errorMessage = `id ${id}: ${notFoundMessage}`
+			let authApiStub
 
 			beforeEach(() => {
-				apiAuthStub = sinon.stub(externalApi, 'apiAuth')
-				apiHeroStub = sinon.stub(externalApi, 'apiHero').throws(new NotFound(errorMessage))
-				apiHeroProfileStub = sinon.stub(externalApi, 'apiHeroProfile').throws(new NotFound(errorMessage))
+				authApiStub = sinon.stub(externalApi, 'authApi')
+				heroApiStub = sinon.stub(externalApi, 'heroApi').throws(new NotFound(errorMessage))
+				heroProfileApiStub = sinon.stub(externalApi, 'heroProfileApi').throws(new NotFound(errorMessage))
 			})
 
 			afterEach(() => {
-				apiAuthStub.restore()
-				apiHeroStub.restore()
-				apiHeroProfileStub.restore()
+				authApiStub.restore()
+				heroApiStub.restore()
+				heroProfileApiStub.restore()
 			})
 
 			it('respond not found', async () => {

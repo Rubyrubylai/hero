@@ -20,6 +20,8 @@ const HERO_WITH_PROFILE_DATA = {
 		luk: 7,
 	},
 }
+const unauthorizedMessage = 'your name or password is wrong'
+const valueErrorMessage = 'name or password is missing'
 
 
 describe('Heroes API', () => {
@@ -75,7 +77,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('your name or password is wrong')
+					expect(result.message).to.equal(unauthorizedMessage)
 
 					done()
 				})
@@ -93,7 +95,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('your name or password is wrong')
+					expect(result.message).to.equal(unauthorizedMessage)
 
 					done()
 				})
@@ -110,7 +112,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('name or password is missing')
+					expect(result.message).to.equal(valueErrorMessage)
 
 					done()
 				})
@@ -127,7 +129,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('name or password is missing')
+					expect(result.message).to.equal(valueErrorMessage)
 
 					done()
 				})
@@ -197,7 +199,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('your name or password is wrong')
+					expect(result.message).to.equal(unauthorizedMessage)
 
 					done()
 				})
@@ -215,7 +217,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('your name or password is wrong')
+					expect(result.message).to.equal(unauthorizedMessage)
 
 					done()
 				})
@@ -232,7 +234,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('name or password is missing')
+					expect(result.message).to.equal(valueErrorMessage)
 
 					done()
 				})
@@ -249,7 +251,7 @@ describe('Heroes API', () => {
 					if (err) return done(err)
 
 					const result = JSON.parse(res.text)
-					expect(result.message).to.equal('name or password is missing')
+					expect(result.message).to.equal(valueErrorMessage)
 
 					done()
 				})

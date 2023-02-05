@@ -54,7 +54,7 @@ class State {
 class NormalSate extends State {
 	async getHeroes() {
 		try {
-			const heroesResult = await externalApi.apiHeroes()
+			const heroesResult = await externalApi.heroesApi()
 			if (heroesResult.data.code) {
 				throw new Error(heroesResult.data.message)
 			}
@@ -68,7 +68,7 @@ class NormalSate extends State {
 
 	async getHero(id) {
 		try {
-			const heroResult = await externalApi.apiHero(id)
+			const heroResult = await externalApi.heroApi(id)
 			if (heroResult.data.code) {
 				throw new Error(heroResult.data.message)
 			}
@@ -92,7 +92,7 @@ class AuthState extends State {
 				throw new ValueError('name or password is missing')
 			}
 
-			await externalApi.apiAuth(name, password)
+			await externalApi.authApi(name, password)
 		}
 		catch (err) {
 			if (err.response && err.response.status === 401)
@@ -107,14 +107,14 @@ class AuthState extends State {
 			// 驗證帳號及密碼
 			await this.heroService.auth()
 
-			const heroesResult = await externalApi.apiHeroes()
+			const heroesResult = await externalApi.heroesApi()
 			const heroes = heroesResult.data
 
 			// 取得各個 hero 的 profile 資訊
 			let tasks = []
 			let heroIds = []
 			for (let hero of heroes) {
-				tasks.push(externalApi.apiHeroProfile(hero.id))
+				tasks.push(externalApi.heroProfileApi(hero.id))
 				heroIds.push(hero.id)
 			}
 			const heroProfileResults = await Promise.allSettled(tasks)
@@ -129,7 +129,7 @@ class AuthState extends State {
 					throw new Error(result.value.data.message)
 				}
 
-				// 根據陣列的推入順序，依序取得 id 及 profile 的對應
+				// heroIds 與 Promise 回傳陣列中值的順序相同，依序取得 heroId 及 profile 的對應
 				idProfileMap[heroIds[idx]] = result.value.data
 			})
 
@@ -150,8 +150,8 @@ class AuthState extends State {
 			await this.heroService.auth()
 
 			let tasks = [
-				externalApi.apiHero(id),
-				externalApi.apiHeroProfile(id),
+				externalApi.heroApi(id),
+				externalApi.heroProfileApi(id),
 			]
 			const heroResults = await Promise.allSettled(tasks)
 

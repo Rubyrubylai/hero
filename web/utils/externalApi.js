@@ -6,10 +6,10 @@ const hahowRequest = axios.create({
 
 
 externalApi = {
-	apiHeroes: () => hahowRequest.get('/heroes'),
-	apiHero: heroId => hahowRequest.get(`/heroes/${heroId}`),
-	apiHeroProfile: heroId => hahowRequest.get(`/heroes/${heroId}/profile`),
-	apiAuth: (name, password) => hahowRequest.post('/auth', {
+	heroesApi: () => hahowRequest.get('/heroes'),
+	heroApi: heroId => hahowRequest.get(`/heroes/${heroId}`),
+	heroProfileApi: heroId => hahowRequest.get(`/heroes/${heroId}/profile`),
+	authApi: (name, password) => hahowRequest.post('/auth', {
 		name: name,
 		password: password,
 	}),
