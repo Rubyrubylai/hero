@@ -46,8 +46,8 @@ class HeroService {
 }
 
 class State {
-	constructor(hero) {
-		this.hero = hero
+	constructor(heroService) {
+		this.heroService = heroService
 	}
 }
 
@@ -95,7 +95,7 @@ class AuthState extends State {
 			await externalApi.apiAuth(name, password)
 		}
 		catch (err) {
-			if (err.response && err.response.data === 'Unauthorized')
+			if (err.response && err.response.status === 401)
 				throw new PermissionDenied('your name or password is wrong')
 
 			throw err
@@ -105,7 +105,7 @@ class AuthState extends State {
 	async getHeroes() {
 		try {
 			// 驗證帳號及密碼
-			await this.hero.auth()
+			await this.heroService.auth()
 
 			const heroesResult = await externalApi.apiHeroes()
 			const heroes = heroesResult.data
@@ -147,7 +147,7 @@ class AuthState extends State {
 	async getHero(id) {
 		try {
 			// 驗證帳號及密碼
-			await this.hero.auth()
+			await this.heroService.auth()
 
 			let tasks = [
 				externalApi.apiHero(id),

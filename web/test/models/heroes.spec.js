@@ -102,7 +102,8 @@ describe('Heroes model', () => {
 				before(() => {
 					const error = {
 						response: {
-							data: 'Unauthorized'
+							status: 401,
+							data: 'Unauthorized',
 						}
 					}
 					apiAuthStub = sinon.stub(externalApi, 'apiAuth').throws(error)
@@ -195,7 +196,8 @@ describe('Heroes model', () => {
 				before(() => {
 					const error = {
 						response: {
-							data: 'Unauthorized'
+							status: 401,
+							data: 'Unauthorized',
 						}
 					}
 					apiAuthStub = sinon.stub(externalApi, 'apiAuth').throws(error)
