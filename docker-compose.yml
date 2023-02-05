@@ -7,3 +7,10 @@ services:
     volumes:
       - /app/node_modules
       - ./web:/app
+  test:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.test
+    volumes:
+      - /app/node_modules
+      - ./web:/app

@@ -24,3 +24,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
 	logger.info('app is running')
 })
+
+module.exports = app
