@@ -2,7 +2,7 @@ const externalApi = require('../../utils/externalApi')
 const { ValueError, PermissionDenied, NotFound } = require('../error')
 
 
-class Hero {
+class HeroService {
 	AuthState = new AuthState(this)
 	NormalSate = new NormalSate(this)
 	currentState = this.NormalSate
@@ -179,5 +179,5 @@ class AuthState extends State {
 
 
 module.exports = {
-	Hero,
+	HeroService,
 }

@@ -3,8 +3,8 @@ const sinon = require("sinon")
 const expect = chai.expect
 
 const externalApi = require('../../utils/externalApi')
-const { Hero } = require('../../models/heroes/index')
-const { PermissionDenied, NotFound, ValueError } = require('../../models/error')
+const { HeroService } = require('../../services/heroes/index')
+const { PermissionDenied, NotFound, ValueError } = require('../../services/error')
 
 const NAME = 'hahow'
 const PASSWORD = 'rocks'
@@ -58,8 +58,8 @@ describe('Heroes model', () => {
 
 		describe('without name and password', () => {
 			it('respond heroes', async () => {
-				hero = new Hero()
-				const heroes = await hero.getHeroes()
+				heroService = new HeroService()
+				const heroes = await heroService.getHeroes()
 
 				expect(heroes).to.deep.equal(MOCK_HEROES_DATA.data)
 			})
@@ -89,8 +89,8 @@ describe('Heroes model', () => {
 				})
 
 				it('respond heroes including profile', async () => {
-					hero = new Hero(NAME, PASSWORD)
-					const heroes = await hero.getHeroes()
+					heroService = new HeroService(NAME, PASSWORD)
+					const heroes = await heroService.getHeroes()
 
 					expect(heroes).to.deep.equal(MOCK_HEROES_WITH_PROFILE_DATA.data)
 				})
@@ -113,9 +113,9 @@ describe('Heroes model', () => {
 				})
 
 				it('respond unauthorized', async () => {
-					hero = new Hero('wrongName', PASSWORD)
+					heroService = new HeroService('wrongName', PASSWORD)
 					try {
-						await hero.getHeroes()
+						await heroService.getHeroes()
 					}
 					catch (err) {
 						expect(err).to.deep.equal(new PermissionDenied('your name or password is wrong'))
@@ -125,9 +125,9 @@ describe('Heroes model', () => {
 
 			describe('get heroes with missing name', () => {
 				it('respond value error', async () => {
-					hero = new Hero(null, PASSWORD)
+					heroService = new HeroService(null, PASSWORD)
 					try {
-						await hero.getHeroes()
+						await heroService.getHeroes()
 					}
 					catch (err) {
 						expect(err).to.deep.equal(new ValueError('name or password is missing'))
@@ -151,10 +151,10 @@ describe('Heroes model', () => {
 
 		describe('without name and password', () => {
 			it('respond hero', async () => {
-				hero = new Hero()
-				const heroData = await hero.getHero(1)
+				heroService = new HeroService()
+				const hero = await heroService.getHero(1)
 
-				expect(heroData).to.deep.equal(MOCK_HERO_DATA.data)
+				expect(hero).to.deep.equal(MOCK_HERO_DATA.data)
 			})
 		})
 
@@ -182,10 +182,10 @@ describe('Heroes model', () => {
 				})
 
 				it('respond hero including profile', async () => {
-					hero = new Hero(NAME, PASSWORD)
-					const heroResult = await hero.getHero()
+					heroService = new HeroService(NAME, PASSWORD)
+					const hero = await heroService.getHero()
 
-					expect(heroResult).to.deep.equal(MOCK_HERO_WITH_PROFILE_DATA.data)
+					expect(hero).to.deep.equal(MOCK_HERO_WITH_PROFILE_DATA.data)
 				})
 			})
 
@@ -206,9 +206,9 @@ describe('Heroes model', () => {
 				})
 
 				it('respond unauthorized', async () => {
-					hero = new Hero('wrongName', PASSWORD)
+					heroService = new HeroService('wrongName', PASSWORD)
 					try {
-						await hero.getHero()
+						await heroService.getHero()
 					}
 					catch (err) {
 						expect(err).to.deep.equal(new PermissionDenied('your name or password is wrong'))
@@ -218,9 +218,9 @@ describe('Heroes model', () => {
 
 			describe('get hero with missing name', () => {
 				it('respond value error', async () => {
-					hero = new Hero(null, PASSWORD)
+					heroService = new HeroService(null, PASSWORD)
 					try {
-						await hero.getHero()
+						await heroService.getHero()
 					}
 					catch (err) {
 						expect(err).to.deep.equal(new ValueError('name or password is missing'))
@@ -251,9 +251,9 @@ describe('Heroes model', () => {
 			})
 
 			it('respond not found', async () => {
-				hero = new Hero()
+				heroService = new HeroService()
 				try {
-					await hero.getHero(id)
+					await heroService.getHero(id)
 				}
 				catch (err) {
 					expect(err).to.deep.equal(new NotFound(`id ${id}: ${notFoundMessage}`))
@@ -278,9 +278,9 @@ describe('Heroes model', () => {
 			})
 
 			it('respond not found', async () => {
-				hero = new Hero(NAME, PASSWORD)
+				heroService = new HeroService(NAME, PASSWORD)
 				try {
-					await hero.getHero(id)
+					await heroService.getHero(id)
 				}
 				catch (err) {
 					expect(err).to.deep.equal(new NotFound(errorMessage))

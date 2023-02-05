@@ -1,4 +1,4 @@
-const { Hero } = require('../models/heroes/index')
+const { HeroService } = require('../services/heroes/index')
 
 
 heroesController = {
@@ -6,8 +6,8 @@ heroesController = {
 		const { name, password } = req.headers
 
 		try {
-			hero = new Hero(name, password)
-			const results = await hero.getHeroes()
+			heroService = new HeroService(name, password)
+			const results = await heroService.getHeroes()
 
 			return res.json(results)
 		}
@@ -21,8 +21,8 @@ heroesController = {
 		const heroId = req.params.heroId
 
 		try {
-			hero = new Hero(name, password)
-			const result = await hero.getHero(heroId)
+			heroService = new HeroService(name, password)
+			const result = await heroService.getHero(heroId)
 
 			return res.json(result)
 		}

@@ -17,14 +17,14 @@ docker-compose up test
 ```mermaid
 graph TD;
 routes-->controllers;
-controllers-->models;
-models-->utils;
+controllers-->services;
+services-->utils;
 routes-->utils;
 controllers-->utils;
 ```
-* routes：負責路由
-* controllers：負責商業邏輯
-* models：負責處理資料
+* routes：負責路由，URL 和控制器之間的關係
+* controllers：負責調用相對應的服務來處理請求
+* services：負責應用程序的商業邏輯
 * utils：放置通用的函式
 
 ## 第三方套件
