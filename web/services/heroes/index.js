@@ -16,32 +16,17 @@ class HeroService {
 	}
 
 	async auth() {
-		try {
-			await this.currentState.auth(this.name, this.password)
-		}
-		catch (err) {
-			throw err
-		}
+		await this.currentState.auth(this.name, this.password)
 	}
 
 	async getHeroes() {
-		try {
-			const heroes = await this.currentState.getHeroes()
-			return heroes
-		}
-		catch (err) {
-			throw err
-		}
+		const heroes = await this.currentState.getHeroes()
+		return heroes
 	}
 
 	async getHero(id) {
-		try {
-			const hero = await this.currentState.getHero(id)
-			return hero
-		}
-		catch(err) {
-			throw err
-		}
+		const hero = await this.currentState.getHero(id)
+		return hero
 	}
 }
 
@@ -53,17 +38,12 @@ class State {
 
 class NormalSate extends State {
 	async getHeroes() {
-		try {
-			const heroesResult = await externalApi.heroesApi()
-			if (heroesResult.data.code) {
-				throw new Error(heroesResult.data.message)
-			}
+		const heroesResult = await externalApi.heroesApi()
+		if (heroesResult.data.code) {
+			throw new Error(heroesResult.data.message)
+		}
 
-			return heroesResult.data
-		}
-		catch (err) {
-			throw err
-		}
+		return heroesResult.data
 	}
 
 	async getHero(id) {
@@ -103,77 +83,67 @@ class AuthState extends State {
 	}
 
 	async getHeroes() {
-		try {
-			// 驗證帳號及密碼
-			await this.heroService.auth()
+		// 驗證帳號及密碼
+		await this.heroService.auth()
 
-			const heroesResult = await externalApi.heroesApi()
-			const heroes = heroesResult.data
+		const heroesResult = await externalApi.heroesApi()
+		const heroes = heroesResult.data
 
-			// 取得各個 hero 的 profile 資訊
-			let tasks = []
-			let heroIds = []
-			for (let hero of heroes) {
-				tasks.push(externalApi.heroProfileApi(hero.id))
-				heroIds.push(hero.id)
-			}
-			const heroProfileResults = await Promise.allSettled(tasks)
+		// 取得各個 hero 的 profile 資訊
+		let tasks = []
+		let heroIds = []
+		for (let hero of heroes) {
+			tasks.push(externalApi.heroProfileApi(hero.id))
+			heroIds.push(hero.id)
+		}
+		const heroProfileResults = await Promise.allSettled(tasks)
 
-			let idProfileMap = {}
-			heroProfileResults.forEach((result, idx) => {
-				if (result.status === 'rejected') {
-					throw new NotFound(result.reason.response.data)
-				}
-
-				if (result.value.data.code) {
-					throw new Error(result.value.data.message)
-				}
-
-				// heroIds 與 Promise 回傳陣列中值的順序相同，依序取得 heroId 及 profile 的對應
-				idProfileMap[heroIds[idx]] = result.value.data
-			})
-
-			for (let hero of heroes) {
-				hero['profile'] = idProfileMap[hero['id']]
+		let idProfileMap = {}
+		heroProfileResults.forEach((result, idx) => {
+			if (result.status === 'rejected') {
+				throw new NotFound(result.reason.response.data)
 			}
 
-			return heroes
+			if (result.value.data.code) {
+				throw new Error(result.value.data.message)
+			}
+
+			// heroIds 與 Promise 回傳陣列中值的順序相同，依序取得 heroId 及 profile 的對應
+			idProfileMap[heroIds[idx]] = result.value.data
+		})
+
+		for (let hero of heroes) {
+			hero['profile'] = idProfileMap[hero['id']]
 		}
-		catch (err) {
-			throw err
-		}
+
+		return heroes
 	}
 
 	async getHero(id) {
-		try {
-			// 驗證帳號及密碼
-			await this.heroService.auth()
+		// 驗證帳號及密碼
+		await this.heroService.auth()
 
-			let tasks = [
-				externalApi.heroApi(id),
-				externalApi.heroProfileApi(id),
-			]
-			const heroResults = await Promise.allSettled(tasks)
+		let tasks = [
+			externalApi.heroApi(id),
+			externalApi.heroProfileApi(id),
+		]
+		const heroResults = await Promise.allSettled(tasks)
 
-			heroResults.forEach(result => {
-				if (result.status === 'rejected') {
-					throw new NotFound(`id ${id}: ${result.reason.response.data}`)
-				}
+		heroResults.forEach(result => {
+			if (result.status === 'rejected') {
+				throw new NotFound(`id ${id}: ${result.reason.response.data}`)
+			}
 
-				if (result.value.data.code) {
-					throw new Error(result.value.data.message)
-				}
-			})
+			if (result.value.data.code) {
+				throw new Error(result.value.data.message)
+			}
+		})
 
-			let hero = heroResults[0].value.data
-			let heroProfile = heroResults[1].value.data
-			hero['profile'] = heroProfile
+		let hero = heroResults[0].value.data
+		let heroProfile = heroResults[1].value.data
+		hero['profile'] = heroProfile
 
-			return hero
-		}
-		catch (err) {
-			throw err
-		}
+		return hero
 	}
 }
 
