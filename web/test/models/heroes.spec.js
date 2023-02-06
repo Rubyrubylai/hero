@@ -6,8 +6,8 @@ const externalApi = require('../../utils/externalApi')
 const { HeroService } = require('../../services/heroes/index')
 const { PermissionDenied, NotFound, ValueError } = require('../../services/error')
 
-const NAME = 'hahow'
-const PASSWORD = 'rocks'
+const MOCK_NAME = 'NAME'
+const MOCK_PASSWORD = 'PASSWORD'
 const MOCK_HERO_DATA = {
 	data: {
 		id: '1',
@@ -89,7 +89,7 @@ describe('Heroes model', () => {
 				})
 
 				it('respond heroes including profile', async () => {
-					heroService = new HeroService(NAME, PASSWORD)
+					heroService = new HeroService(MOCK_NAME, MOCK_PASSWORD)
 					const heroes = await heroService.getHeroes()
 
 					expect(heroes).to.deep.equal(MOCK_HEROES_WITH_PROFILE_DATA.data)
@@ -114,7 +114,7 @@ describe('Heroes model', () => {
 				})
 
 				it('respond unauthorized', async () => {
-					heroService = new HeroService('wrongName', PASSWORD)
+					heroService = new HeroService('wrongName', MOCK_PASSWORD)
 					try {
 						await heroService.getHeroes()
 					}
@@ -126,7 +126,7 @@ describe('Heroes model', () => {
 
 			describe('get heroes with missing name', () => {
 				it('respond value error', async () => {
-					heroService = new HeroService(null, PASSWORD)
+					heroService = new HeroService(null, MOCK_PASSWORD)
 					try {
 						await heroService.getHeroes()
 					}
@@ -183,7 +183,7 @@ describe('Heroes model', () => {
 				})
 
 				it('respond hero including profile', async () => {
-					heroService = new HeroService(NAME, PASSWORD)
+					heroService = new HeroService(MOCK_NAME, MOCK_PASSWORD)
 					const hero = await heroService.getHero(1)
 
 					expect(hero).to.deep.equal(MOCK_HERO_WITH_PROFILE_DATA.data)
@@ -208,7 +208,7 @@ describe('Heroes model', () => {
 				})
 
 				it('respond unauthorized', async () => {
-					heroService = new HeroService('wrongName', PASSWORD)
+					heroService = new HeroService('wrongName', MOCK_PASSWORD)
 					try {
 						await heroService.getHero(1)
 					}
@@ -220,7 +220,7 @@ describe('Heroes model', () => {
 
 			describe('get hero with missing name', () => {
 				it('respond value error', async () => {
-					heroService = new HeroService(null, PASSWORD)
+					heroService = new HeroService(null, MOCK_PASSWORD)
 					try {
 						await heroService.getHero(1)
 					}
@@ -280,7 +280,7 @@ describe('Heroes model', () => {
 			})
 
 			it('respond not found', async () => {
-				heroService = new HeroService(NAME, PASSWORD)
+				heroService = new HeroService(MOCK_NAME, MOCK_PASSWORD)
 				try {
 					await heroService.getHero(id)
 				}

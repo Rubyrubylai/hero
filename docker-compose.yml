@@ -13,3 +13,4 @@ services:
       dockerfile: Dockerfile.test
     volumes:
       - /app/node_modules
+      - ./web:/app

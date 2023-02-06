@@ -4,8 +4,8 @@ const expect = chai.expect
 
 const app = require('../../app')
 
-const NAME = 'hahow'
-const PASSWORD = 'rocks'
+const NAME = process.env.NAME
+const PASSWORD = process.env.PASSWORD
 const HERO_DATA = {
 	id: '1',
 	name: 'Daredevil',
