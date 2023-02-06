@@ -10,7 +10,7 @@ docker-compose up web
 3. 在 web 資料夾底下新增 .env 檔案，並寫入以下環境變數
 ```
 NAME=hahow
-PASSWORD=password
+PASSWORD=rocks
 ```
 4. 在本機端 http://localhost:3000/heroes 開啟網址
 5. 自動化測試
@@ -38,7 +38,8 @@ controllers-->utils;
 		- 用於發送 HTTP 請求和處理響應
 		- 可以發送 GET、POST、PUT、DELETE 等請求
 	- dotenv
-		- 將機敏資料等環境變數放置在 .env 檔案裡，透過 dotenv 可存取檔案裡的環境變數
+		- 將機敏資料等環境變數放置在 .env 檔案裡，並利用 gitignore 忽略 .env，使這些資料不受版本控制
+		- 透過 dotenv 可存取檔案裡的環境變數
 	- express
 		- Node.js 的框架
 		- 提供路由系統，並支援模板引擎及 middleware
