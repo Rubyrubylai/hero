@@ -6,7 +6,7 @@ heroesController = {
 		const { name, password } = req.headers
 
 		try {
-			heroService = new HeroService(name, password)
+			const heroService = new HeroService(name, password)
 			const results = await heroService.getHeroes()
 
 			return res.json(results)
@@ -21,7 +21,7 @@ heroesController = {
 		const heroId = req.params.heroId
 
 		try {
-			heroService = new HeroService(name, password)
+			const heroService = new HeroService(name, password)
 			const result = await heroService.getHero(heroId)
 
 			return res.json(result)
